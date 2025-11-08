@@ -137,3 +137,7 @@
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
 
+:root {
+  --project-max-width: 1100px;
+  --project-header-align: center;
+}

@@ -22,7 +22,11 @@
   },
   "homepage": "https://github.com/Ipnu22Aris33/personal-documentation#readme",
   "devDependencies": {
+    "typescript": "^5.9.3",
     "vitepress": "^1.6.4",
     "vue": "^3.5.24"
+  },
+  "dependencies": {
+    "@vueuse/motion": "^3.0.3"
   }
 }

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ESNext",
+    "allowJs": true,
+    "strict": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "docs/.vitepress/**/*",
+    "docs/**/*.ts",
+    "docs/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules",
+    "docs/.vitepress/cache",
+    "docs/.vitepress/dist"
+  ]
+}
