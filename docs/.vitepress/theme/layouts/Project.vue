@@ -16,16 +16,18 @@
       </button>
     </div>
 
-    <ProjectCategory
-      v-for="category in filteredCategories"
-      :key="category.name"
-      :category="category"
-    />
+    <div class="project-grid">
+      <ProjectCard
+        v-for="project in filteredProjects"
+        :key="project.title"
+        :project="project"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useData, useRouter } from 'vitepress';
 
 const { frontmatter } = useData();
@@ -34,48 +36,48 @@ const router = useRouter();
 const showHeader = frontmatter.value.showHeader ?? true;
 const title = frontmatter.value.title ?? 'Projects';
 const description = frontmatter.value.description ?? '';
-const categories = frontmatter.value.categories ?? [];
-const defaultFilter = frontmatter.value.defaultFilter ?? 'all';
+const projects = frontmatter.value.projects ?? [];
+const defaultFilter = frontmatter.value.defaultFilter ?? 'All';
 
-// Auto-generate filters dari categories
+// Auto-generate filters dari semua categories
 const allFilters = computed(() => {
   const filters = new Set<string>([defaultFilter]);
-  categories.forEach((cat: any) => {
-    cat.projects?.forEach((p: any) => {
-      if (p.category) filters.add(p.category);
-    });
+  
+  projects.forEach((p: any) => {
+    if (Array.isArray(p.categories)) {
+      p.categories.forEach((cat: string) => filters.add(cat));
+    } else if (p.categories) {
+      filters.add(p.categories);
+    }
   });
+  
   return Array.from(filters);
 });
 
 const activeFilter = ref(defaultFilter);
 
-// Set filter dan update hash
 const setFilter = (filter: string) => {
   activeFilter.value = filter;
   router.go(`/projects/#${filter.toLowerCase()}`);
 };
 
-// Sync dari hash URL
 onMounted(() => {
   const hash = window.location.hash.slice(1);
-  if (hash && allFilters.value.includes(hash)) {
-    activeFilter.value = hash;
+  if (hash && allFilters.value.map(f => f.toLowerCase()).includes(hash)) {
+    activeFilter.value = allFilters.value.find(f => f.toLowerCase() === hash) || defaultFilter;
   }
 });
 
-// Filter categories
-const filteredCategories = computed(() => {
-  if (activeFilter.value === defaultFilter) return categories;
+// Filter projects berdasarkan categories
+const filteredProjects = computed(() => {
+  if (activeFilter.value === defaultFilter) return projects;
   
-  return categories
-    .map((cat: any) => ({
-      ...cat,
-      projects: cat.projects?.filter((p: any) => 
-        p.category?.toLowerCase() === activeFilter.value.toLowerCase()
-      ) ?? []
-    }))
-    .filter((cat: any) => cat.projects.length > 0);
+  return projects.filter((p: any) => {
+    const cats = Array.isArray(p.categories) ? p.categories : [p.categories];
+    return cats.some((cat: string) => 
+      cat?.toLowerCase() === activeFilter.value.toLowerCase()
+    );
+  });
 });
 </script>
 
@@ -130,5 +132,11 @@ const filteredCategories = computed(() => {
   background: var(--vp-c-brand-1);
   border-color: var(--vp-c-brand-1);
   color: white;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 </style>
