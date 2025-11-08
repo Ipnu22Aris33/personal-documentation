@@ -1,14 +1,14 @@
 <!-- ProjectCard.vue -->
 <template>
     <div class="project-card">
-        <!-- Space image SELALU ada, mau ada gambar atau nggak -->
         <div class="project-image">
             <img v-if="project.image" :src="project.image" :alt="project.title" />
         </div>
 
         <div class="project-body">
             <h3 class="project-title">
-                <a v-if="project.docs" :href="project.docs" target="_blank" class="title-link">
+                <!-- Internal link (tanpa target="_blank") - smooth navigation -->
+                <a v-if="project.docs" :href="project.docs" class="title-link">
                     {{ project.title }}
                 </a>
                 <span v-else>{{ project.title }}</span>
@@ -23,10 +23,10 @@
             </div>
 
             <div class="project-links">
-                <a v-if="project.demo" :href="project.demo" target="_blank" class="link-demo">
+                <a v-if="project.demo" :href="project.demo" target="_blank" rel="noopener noreferrer" class="link-demo">
                     Demo
                 </a>
-                <a v-if="project.github" :href="project.github" target="_blank" class="link-github">
+                <a v-if="project.github" :href="project.github" target="_blank" rel="noopener noreferrer" class="link-github">
                     GitHub
                 </a>
             </div>
